@@ -26,14 +26,16 @@ def main_menu():
             new_list_file(list_file)
         elif new_or_existing == 2:
             list_file = input(
-                "What is the name of your existing to-do list?"
+                "What is the name of your existing to-do list? "
                 )
             list_file += ".json"
             read_existing_list(list_file)
         elif new_or_existing == 0:
             raise ExitProgram
         else:
-            print("Invalid Command, Please choose '1' or '2' only.")
+            print(
+                "Invalid Command, Please choose '1' or '2' only.", end="\n\n"
+                )
 
 def new_list_file(list_file):
     dictionary = {
@@ -59,19 +61,36 @@ def read_existing_list(
     with open(list_file, "r") as filename:
         dictionary = json.load(filename)
         if task_status == "all" or task_status == "incomplete":
-            print("Incomplete: ")
+            print("**********")
+            print("Incomplete: ", end="\n\n")
+            print("**********")
             for value in dictionary[parent][incomplete]:
                 print(value)
-        
+            print("**********")
+            print(
+                "You have "
+                f"{len(dictionary[parent][incomplete])} incomplete tasks."
+                "\n\n"
+                )
         if task_status == "all" or task_status == "completed":
-            print("Completed: ")
+            print("**********")
+            print("Completed: ", end="\n\n")
+            print("**********")
             for value in dictionary[parent][completed]:
                 print(value)
+            print("**********")
+            print(
+                "You have "
+                f"{len(dictionary[parent][completed])} completed tasks."
+                "\n\n"
+                )
     list_manager(list_file)
 
 def list_manager(list_file):
     while True:
         next_step = int(input("""
+    List Menu
+    
     1: Enter a new task.
     2: View all tasks.
     3: View incomplete tasks.
@@ -98,8 +117,10 @@ def list_manager(list_file):
             main_menu()
         else:
             print("""
+    
     Invalid command. 
     Please enter a number corresponding to the action you wish to take.
+    
     """)
 
 def add_entry(
@@ -111,6 +132,7 @@ def add_entry(
         dictionary = json.load(filename)
     value = input(f"Please enter the task to add to '{list_file[:-5]}': ")
     dictionary[parent][child].append(value)
+    print(f"You have added '{value}' to your '{list_file[:-5]}' list.")
     save_list(list_file, dictionary, False)
 
 def mark_as_completed(
@@ -127,10 +149,17 @@ def mark_as_completed(
         index += 1
     index = int(input("Which task would you like to mark as completed? "))
     index -=1
-    dictionary[parent][new_child].append(dictionary[parent][old_child].pop(index))
+    completed_task = dictionary[parent][old_child].pop(index)
+    dictionary[parent][new_child].append(completed_task)
+    print(f"You have marked '{completed_task} as completed.")
     save_list(list_file, dictionary, False)
 
-def delete_entry(list_file, parent="Tasks", incomplete="Incomplete", completed="Completed"):
+def delete_entry(
+    list_file, 
+    parent="Tasks", 
+    incomplete="Incomplete", 
+    completed="Completed"
+    ):
     with open(list_file, "r") as filename:
         dictionary = json.load(filename)
     index = 1
@@ -149,7 +178,7 @@ def delete_entry(list_file, parent="Tasks", incomplete="Incomplete", completed="
         deleted = dictionary[parent][completed].pop(index)
     print(f"You have successfully deleted: {deleted}.")
     save_list(list_file, dictionary, False)
-    
+
 def save_list(
     list_file, 
     dictionary, 
@@ -161,8 +190,9 @@ def save_list(
         list_manager(list_file)
 
 ############### Script ###############
+
 if __name__ == "__main__":
     try:
         main_menu()
     except ExitProgram:
-        print("Thank you for using our to-do app.")
+        print("***** Thank you for using our to-do app. *****")
