@@ -10,9 +10,11 @@ class ExitProgram(Exception):
 def main_menu():
     print("""
     ***** To-Do List App *****
-        """)
+    """)
     while True:
-        print("How would you like to proceed?")
+        print("""
+    How would you like to proceed?
+    """)
         try:
             new_or_existing = int(input("""
     
@@ -24,34 +26,42 @@ def main_menu():
     """))
             
             if new_or_existing == 1:
-                list_file = input(
-                    "What would you like to name your new list? "
-                    )
+                list_file = input("""
+    
+    What would you like to name your new list?
+    
+    """)
                 new_list_file(list_file)
             elif new_or_existing == 2:
                 try:
-                    list_file = input(
-                        "What is the name of your existing to-do list? "
-                        )
+                    list_file = input("""
+    
+    What is the name of your existing to-do list?
+    
+    """)
                     list_file += ".json"
                     read_existing_list(list_file)
                 except FileNotFoundError:
-                    print(
-                        f"Error. The {list_file[:-5]} list does not exist. "
-                        "Please ensure you've entered the correct name."
-                        )
+                    print(f"""
+    
+    Error. The '{list_file[:-5]}' list does not exist. 
+    Please ensure you've entered the correct name.
+    
+    """)
             elif new_or_existing == 0:
                 raise ExitProgram
             else:
-                print(
-                    "Invalid Command, Please choose '1' or '2' only.", 
-                    end="\n\n"
-                    )
+                print("""
+    
+    Invalid Command, Please choose '1' or '2' only.
+    
+    """)
         except ValueError:
-            print(
-                "Invalid Command, Please choose '1' or '2' only.",
-                end="\n\n"
-                )
+            print("""
+    
+    Invalid Command, Please choose '1' or '2' only.
+    
+    """)
 
 def new_list_file(list_file):
     dictionary = {
@@ -78,34 +88,49 @@ def read_existing_list(
         dictionary = json.load(filename)
         
         if task_status == "all" or task_status == "incomplete":
-            print("**********")
-            print("Incomplete: ", end="\n\n")
+            print("""
+    
+    **********
+    Incomplete:
+    **********
+    
+    """)
             for value in dictionary[parent][incomplete]:
-                print(value)
-            print("**********")
-            print(
-                "You have "
-                f"{len(dictionary[parent][incomplete])} incomplete tasks."
-                "\n\n"
-                )
+                print(f"""
+    {value}
+    """)
+            print("""
+    **********
+    """)
+            print(f"""
+    You have {len(dictionary[parent][incomplete])} incomplete tasks.
+    """)
         
         if task_status == "all" or task_status == "completed":
-            print("**********")
-            print("Completed: ", end="\n\n")
+            print("""
+    
+    **********
+    Completed:
+    **********
+    
+    """)
             for value in dictionary[parent][completed]:
-                print(value)
-            print("**********")
-            print(
-                "You have "
-                f"{len(dictionary[parent][completed])} completed tasks."
-                "\n\n"
-                )
+                print(f"""
+    {value}
+    """)
+            print("""
+    **********
+    """)
+            print(f"""
+    You have {len(dictionary[parent][completed])} completed tasks.
+    """)
     list_manager(list_file)
 
 def list_manager(list_file):
     while True:
         try:
             next_step = int(input("""
+    
     List Menu
     
     1: Enter a new task.
@@ -155,9 +180,19 @@ def add_entry(
     ):
     with open(list_file, "r") as filename:
         dictionary = json.load(filename)
-    value = input(f"Please enter the task to add to '{list_file[:-5]}': ")
+    value = input(f"""
+    
+    Please enter the task to add to '{list_file[:-5]}': 
+    
+    """)
+    
     dictionary[parent][child].append(value)
-    print(f"You have added '{value}' to your '{list_file[:-5]}' list.")
+    print(f"""
+    
+    You have added '{value}' to your '{list_file[:-5]}' list.
+    
+    """)
+    
     save_list(list_file, dictionary, False)
 
 def mark_as_completed(
@@ -171,24 +206,42 @@ def mark_as_completed(
     
     index = 1
     for value in dictionary[parent][old_child]:
-        print(f"{index}: {value}")
+        print(f"""
+    
+    {index}: {value}
+    
+    """)
+    
         index += 1
     
     while True:
         try:
-            index = int(input("Which task would you like to mark as completed? "))
-            break
-        except ValueError:
-            print(
-                "Please enter a number corresponding to the task you "
-                "would like to delete."
-                )
+            index = int(input("""
+    
+    Which task would you like to mark as completed? 
+    
+    """))
+            index -=1
+            if index <= len(dictionary[parent][old_child]) - 1 and index >= 0:
+                break
+            else:
+                raise IndexError
+        except (ValueError, IndexError):
+            print("""
+    
+    Please enter a number corresponding to the task you would like to mark as completed.
+    
+    """)
             continue
     
-    index -=1
     completed_task = dictionary[parent][old_child].pop(index)
     dictionary[parent][new_child].append(completed_task)
-    print(f"You have marked '{completed_task} as completed.")
+    print(f"""
+    
+    You have marked '{completed_task}' as completed.
+    
+    """)
+    
     save_list(list_file, dictionary, False)
 
 def delete_entry(
@@ -202,25 +255,39 @@ def delete_entry(
     
     index = 1
     for key in dictionary[parent]:
-        print(f"{key}: ")
+        print(f"""
+    **********
+    {key}:
+    **********
+    """)
         for value in dictionary[parent][key]:
-            print(f"{index}: {value}")
+            print(f"""
+    {index}: {value}
+    """)
             index += 1
     
     total_tasks = len(dictionary[parent][incomplete]) + len(dictionary[parent][completed])
     while True:
         try:
-            index = int(input("Which entry would you like to delete? "))
+            index = int(input("""
+    
+    Which entry would you like to delete?
+    
+    """))
             if index <= len(dictionary[parent][incomplete]) and index != 0:
                 index -= 1
                 deleted = dictionary[parent][incomplete].pop(index)
             elif index > len(dictionary[parent][incomplete]) and index <= total_tasks:
                 index -= 1
-                index -= len(dictionary[parent][completed])
+                index -= len(dictionary[parent][incomplete])
                 deleted = dictionary[parent][completed].pop(index)
             else:
                 raise IndexError
-            print(f"You have successfully deleted: {deleted}.")
+            print(f"""
+    
+    You have successfully deleted: {deleted}.
+    
+    """)
             save_list(list_file, dictionary, False)
             break
         except (ValueError, IndexError):
@@ -247,4 +314,8 @@ if __name__ == "__main__":
     try:
         main_menu()
     except ExitProgram:
-        print("***** Thank you for using our to-do app. *****")
+        print("""
+    
+    ***** Thank you for using our to-do app. *****
+    
+    """)
