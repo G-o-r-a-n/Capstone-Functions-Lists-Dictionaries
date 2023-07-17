@@ -22,7 +22,7 @@ The script executes the following steps:
 
 - **Present User Interface:** The script starts by presenting a user-friendly command-line interface where users can manage their to-do tasks.
 - **Handle User Input:** The script then handles user input to perform the desired operations (creating a list, adding tasks, viewing tasks, marking tasks as complete, and deleting tasks).
-- **To-Do List Structure:**A dictionary is constructed to serve as the base for the to-do list.
+- **To-Do List Structure:** A dictionary is constructed to serve as the base for the to-do list.
     - The dictionary is structured with two keys: `"List"` and `"Tasks"`.
     - The value of the `"List"` key is the name of the new list.
     - The value of the `"Tasks"` key is another dictionary that contains two keys: `"Incomplete"` and `"Completed"`. Each of these keys has an empty list as its value. These lists will hold the tasks the user adds to the to-do list, separated based on their completion status.
